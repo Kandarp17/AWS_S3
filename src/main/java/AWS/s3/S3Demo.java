@@ -2,8 +2,12 @@ package AWS.s3;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
+
+import org.apache.commons.io.FileUtils;
+
 import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.services.s3.AmazonS3;
@@ -12,7 +16,8 @@ import com.amazonaws.services.s3.model.Bucket;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
-import com.amazonaws.services.s3.model.PutObjectResult;
+import com.amazonaws.services.s3.model.S3Object;
+import com.amazonaws.services.s3.model.S3ObjectInputStream;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
 
 public class S3Demo {
@@ -24,35 +29,36 @@ public class S3Demo {
 		// user must have AWSConnector and AmazonS3FullAccess for 
 		// this example to work
 		AWSCredentials credentials = new BasicAWSCredentials(
-				"access key", 
-				"Secret key");
+				"accesskey", 
+				"SecretKey");
 		
 		// create a client connection based on credentials
 		AmazonS3 s3client = new AmazonS3Client(credentials);
 		
 		// create bucket - name must be unique for all S3 users
 		String bucketName = "aws-s3-example";
-		//createBucket(s3client, bucketName);
+		createBucket(s3client, bucketName);
 		
 		// list buckets
 		getBucketList(s3client);
 		
 		// create folder into bucket
 		String folderName = "Files";
-		//createFolder(bucketName, folderName, s3client);
+		createFolder(bucketName, folderName, s3client);
 		
 		// upload file to folder and set it to public
 		String fileName = folderName + SUFFIX + "test1.png";
 		String filePath="/Users/kandarppatel/Desktop/outline.png";
 		uploadFile(s3client,bucketName,filePath,fileName);
 		
-		
+		//Download Object from s3 bucket
+		downloadObject(s3client, bucketName);
 		
 		//delete folder from the bucket
-		//deleteFolder(bucketName, folderName, s3client);
+		deleteFolder(bucketName, folderName, s3client);
 		
 		// deletes bucket
-		//deleteBucket(s3client, bucketName);
+		deleteBucket(s3client, bucketName);
 	}
 	
 	public static void createBucket(AmazonS3 s3client, String bucketName) {
@@ -80,6 +86,17 @@ public class S3Demo {
 		System.out.println("Uploaded object Url: "+objectUrl);
 		
 		
+	}
+	
+	public static void downloadObject( AmazonS3 s3client,String bucketName) {
+		S3Object s3object = s3client.getObject(bucketName, "Files/outline.png");
+		S3ObjectInputStream inputStream = s3object.getObjectContent();
+		try {
+			FileUtils.copyInputStreamToFile(inputStream, new File("/Users/kandarppatel/Desktop/download.png"));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	
