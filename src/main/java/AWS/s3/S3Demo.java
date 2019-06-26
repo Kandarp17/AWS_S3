@@ -12,6 +12,7 @@ import com.amazonaws.services.s3.model.Bucket;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.amazonaws.services.s3.model.PutObjectResult;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
 
 public class S3Demo {
@@ -24,33 +25,34 @@ public class S3Demo {
 		// this example to work
 		AWSCredentials credentials = new BasicAWSCredentials(
 				"access key", 
-				"secret key");
+				"Secret key");
 		
 		// create a client connection based on credentials
 		AmazonS3 s3client = new AmazonS3Client(credentials);
 		
 		// create bucket - name must be unique for all S3 users
-		String bucketName = "aws-s3-sdk-create-bucket";
-		createBucket(s3client, bucketName);
+		String bucketName = "aws-s3-example";
+		//createBucket(s3client, bucketName);
 		
 		// list buckets
 		getBucketList(s3client);
 		
 		// create folder into bucket
-		String folderName = "testfolder";
-		createFolder(bucketName, folderName, s3client);
+		String folderName = "Files";
+		//createFolder(bucketName, folderName, s3client);
 		
 		// upload file to folder and set it to public
-		String fileName = folderName + SUFFIX + "test.png";
-		String filePath="/Users/kandarppatel/Desktop/Screen Shot 2019-06-25 at 8.20.20 AM.png";
+		String fileName = folderName + SUFFIX + "test1.png";
+		String filePath="/Users/kandarppatel/Desktop/outline.png";
 		uploadFile(s3client,bucketName,filePath,fileName);
 		
 		
+		
 		//delete folder from the bucket
-		deleteFolder(bucketName, folderName, s3client);
+		//deleteFolder(bucketName, folderName, s3client);
 		
 		// deletes bucket
-		deleteBucket(s3client, bucketName);
+		//deleteBucket(s3client, bucketName);
 	}
 	
 	public static void createBucket(AmazonS3 s3client, String bucketName) {
@@ -71,15 +73,17 @@ public class S3Demo {
 		s3client.putObject(new PutObjectRequest(bucketName, fileName, 
 				new File(filePath))
 				.withCannedAcl(CannedAccessControlList.PublicRead));
+		//https://aws-s3-example.s3.us-east-2.amazonaws.com/Files/test.png
+		//get s3 object url
+		String region=s3client.getBucketLocation(bucketName);
+		String objectUrl="https://"+bucketName+".s3."+region+".amazonaws.com/"+fileName;
+		System.out.println("Uploaded object Url: "+objectUrl);
+		
 		
 	}
 	
-//	public static void getObjectUrl() {
-//		String url=s3client.getResourceUrl("aws-s3-example","Files/test.png");
-//		
-//		return url;
-//	}
-//	
+	
+	
 	public static void createFolder(String bucketName, String folderName, AmazonS3 client) {
 		// create meta-data for your folder and set content-length to 0
 		ObjectMetadata metadata = new ObjectMetadata();
