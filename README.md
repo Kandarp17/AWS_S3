@@ -1,4 +1,4 @@
-# AWS
+# AWS S3
 This project is demo to perform oprations on AWS S3 Bucket;
 1) Create Bucket
 2) Create Folder
