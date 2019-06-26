@@ -23,8 +23,8 @@ public class S3Demo {
 		// user must have AWSConnector and AmazonS3FullAccess for 
 		// this example to work
 		AWSCredentials credentials = new BasicAWSCredentials(
-				"AKIA3H7XHQLEMGBF64JF", 
-				"JJJrl5ZUuWlIABhSvsH5Ffc2DrfCHirqQ0JHKLJI");
+				"access key", 
+				"secret key");
 		
 		// create a client connection based on credentials
 		AmazonS3 s3client = new AmazonS3Client(credentials);
@@ -71,8 +71,15 @@ public class S3Demo {
 		s3client.putObject(new PutObjectRequest(bucketName, fileName, 
 				new File(filePath))
 				.withCannedAcl(CannedAccessControlList.PublicRead));
+		
 	}
 	
+//	public static void getObjectUrl() {
+//		String url=s3client.getResourceUrl("aws-s3-example","Files/test.png");
+//		
+//		return url;
+//	}
+//	
 	public static void createFolder(String bucketName, String folderName, AmazonS3 client) {
 		// create meta-data for your folder and set content-length to 0
 		ObjectMetadata metadata = new ObjectMetadata();
